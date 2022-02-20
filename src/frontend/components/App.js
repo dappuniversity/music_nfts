@@ -28,7 +28,7 @@ function App() {
               </a>
               <h1 className= "mt-5">Dapp University Starter Kit</h1>
               <p>
-                Edit <code>src/components/App.js</code> and save to reload.
+                Edit <code>src/frontend/components/App.js</code> and save to reload.
               </p>
               <a
                 className="App-link"
