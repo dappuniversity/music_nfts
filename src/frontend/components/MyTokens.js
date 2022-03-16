@@ -38,8 +38,8 @@ export default function MyTokens({ nftMarketplace }) {
     setLoading(false)
   }
   const resellItem = async (item) => {
-    console.log(item.itemId.toString(), inputIndex)
-    if (resellPrice === "0" || item.itemId.toString() !== inputIndex.toString() || !resellPrice) return
+    console.log(item.itemId, inputIndex)
+    if (resellPrice === "0" || item.itemId !== inputIndex || !resellPrice) return
     // Get royalty fee
     const fee = await nftMarketplace.royaltyFee()
     const price = ethers.utils.parseEther(resellPrice.toString())
@@ -106,11 +106,11 @@ export default function MyTokens({ nftMarketplace }) {
                       </Button>
                       <Form.Control
                         onChange={(e) => {
-                          setInputIndex(idx)
+                          setInputIndex(item.itemId)
                           setResellPrice(e.target.value)
                         }}
                         size="md"
-                        value={inputIndex === idx ? resellPrice : ''}
+                        value={inputIndex === item.itemId ? resellPrice : ''}
                         required type="number"
                         placeholder="Price in ETH"
                       />
