@@ -8,7 +8,8 @@ export default function MyTokens({ nftMarketplace }) {
   const [loading, setLoading] = useState(true)
   const [myTokens, setMyTokens] = useState(null)
   const [isPlaying, setIsPlaying] = useState(null)
-  const [selected, setSelected] = useState(null)
+  const [selected, setSelected] = useState(0)
+  const [previous, setPrevious] = useState(null)
   const [inputIndex, setInputIndex] = useState(null)
   const [resellPrice, setResellPrice] = useState(null)
   const loadMyTokens = async () => {
@@ -38,7 +39,7 @@ export default function MyTokens({ nftMarketplace }) {
   }
   const resellItem = async (item) => {
     console.log(item.itemId.toString(), inputIndex)
-    if(resellPrice === "0" || item.itemId.toString() !== inputIndex.toString() || !resellPrice ) return
+    if (resellPrice === "0" || item.itemId.toString() !== inputIndex.toString() || !resellPrice) return
     // Get royalty fee
     const fee = await nftMarketplace.royaltyFee()
     const price = ethers.utils.parseEther(resellPrice.toString())
@@ -46,18 +47,18 @@ export default function MyTokens({ nftMarketplace }) {
     loadMyTokens()
   }
   useEffect(() => {
-    {
-      if (isPlaying) {
-        audioRef.current[selected].play()
-      } else if (isPlaying !== null) {
-        audioRef.current[selected].pause()
-      }
+    if (isPlaying) {
+      audioRef.current[selected].play()
+      if (selected !== previous) audioRef.current[previous].pause()
+    } else if (isPlaying !== null) {
+      audioRef.current[selected].pause()
     }
-  })
+
+  }, [selected, previous, isPlaying])
 
   useEffect(() => {
-    loadMyTokens()
-  }, [])
+    !myTokens && loadMyTokens()
+  })
 
   if (loading) return (
     <main style={{ padding: "1rem 0" }}>
@@ -79,15 +80,16 @@ export default function MyTokens({ nftMarketplace }) {
                     <Card.Title>{item.name}</Card.Title>
                     <div className="d-grid px-4">
                       <Button variant="secondary" onClick={() => {
+                        setPrevious(selected)
                         setSelected(idx)
-                        setIsPlaying(!isPlaying)
+                        if (!isPlaying || idx === selected) setIsPlaying(!isPlaying)
                       }}>
                         {isPlaying && selected === idx ? (
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-pause" viewBox="0 0 16 16">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" className="bi bi-pause" viewBox="0 0 16 16">
                             <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z" />
                           </svg>
                         ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-play" viewBox="0 0 16 16">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" className="bi bi-play" viewBox="0 0 16 16">
                             <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z" />
                           </svg>
                         )}
@@ -99,7 +101,7 @@ export default function MyTokens({ nftMarketplace }) {
                   </Card.Body>
                   <Card.Footer>
                     <InputGroup className="my-1">
-                      <Button onClick={() => resellItem(item)} variant="outline-secondary" id="button-addon1">
+                      <Button onClick={() => resellItem(item)} variant="outline-primary" id="button-addon1">
                         Resell
                       </Button>
                       <Form.Control
