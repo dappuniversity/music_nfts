@@ -102,9 +102,9 @@ export default function MyResales({ nftMarketplace, account }) {
               </Col>
             ))}
           </Row>
-          {soldItems.length > 0 &&
-            <>
-              <h2>Sold</h2>
+          <>
+            <h2>Sold</h2>
+            {soldItems.length > 0 ?
               <Row xs={1} md={2} lg={4} className="g-4 py-3">
                 {listedItems.map((item, idx) => (
                   <Col key={idx} className="overflow-hidden">
@@ -120,8 +120,12 @@ export default function MyResales({ nftMarketplace, account }) {
                   </Col>
                 ))}
               </Row>
-            </>
-          }
+              : (
+                <main style={{ padding: "1rem 0" }}>
+                  <h2>No sold assets</h2>
+                </main>
+              )}
+          </>
         </div>
         : (
           <main style={{ padding: "1rem 0" }}>
