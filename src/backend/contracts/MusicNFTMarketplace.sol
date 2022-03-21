@@ -4,25 +4,19 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract MusicNFTMarketplace is ERC721, Ownable {
-    uint256 public _tokenIds;
-
-    uint256 public immutable maxSupply;
-
+contract MusicNFTMarketplace is ERC721("DAppFi", "DAPP"), Ownable {
     string public baseURI =
         "https://bafybeidhjjbjonyqcahuzlpt7sznmh4xrlbspa3gstop5o47l6gsiaffee.ipfs.nftstorage.link/";
     string public baseExtension = ".json";
-
     address public artist;
     uint256 public royaltyFee;
-
-    MarketItem[] public marketItems;
 
     struct MarketItem {
         uint256 tokenId;
         address payable seller;
         uint256 price;
     }
+    MarketItem[] public marketItems;
 
     event MarketItemBought(
         uint256 indexed tokenId,
@@ -37,20 +31,17 @@ contract MusicNFTMarketplace is ERC721, Ownable {
     );
 
     /* In constructor we initalize royalty fee, artist address and prices of music nfts*/
-    /* All the nfts are minted for the marketplace and we create a market item for each, */
-    /* setting the deployer as the seller and price as the price in the current index in the prices array */
     constructor(
         uint256 _royaltyFee,
         address _artist,
         uint256[] memory _prices
-    ) payable ERC721("DAppFi", "DAPP") {
+    ) payable {
         require(
             _prices.length * _royaltyFee <= msg.value,
             "Deployer must pay royalty fee for each token listed on the marketplace"
         );
         royaltyFee = _royaltyFee;
         artist = _artist;
-        maxSupply = _prices.length;
         for (uint8 i = 0; i < _prices.length; i++) {
             require(_prices[i] > 0, "Price must be greater than 0");
             _mint(address(this), i);
@@ -58,14 +49,14 @@ contract MusicNFTMarketplace is ERC721, Ownable {
         }
     }
 
-    /* Updates the listing price of the contract */
-    function updateRoyaltyFee(uint256 _royaltyFee) public payable onlyOwner {
+    /* Updates the royalty fee of the contract */
+    function updateRoyaltyFee(uint256 _royaltyFee) external onlyOwner {
         royaltyFee = _royaltyFee;
     }
 
     /* Creates the sale of a music nft listed on the marketplace */
     /* Transfers ownership of the nft, as well as funds between parties */
-    function buyToken(uint256 _tokenId) public payable {
+    function buyToken(uint256 _tokenId) external payable {
         uint256 price = marketItems[_tokenId].price;
         address seller = marketItems[_tokenId].seller;
         require(
@@ -80,17 +71,14 @@ contract MusicNFTMarketplace is ERC721, Ownable {
     }
 
     /* Allows someone to resell their music nft */
-    function resellToken(uint256 _tokenId, uint256 price) public payable {
-        require(
-            msg.value == royaltyFee,
-            "Price must be equal to listing price"
-        );
-        require(price > 0, "Price must be greater than zero");
-        marketItems[_tokenId].price = price;
+    function resellToken(uint256 _tokenId, uint256 _price) external payable {
+        require(msg.value == royaltyFee, "Must pay royalty");
+        require(_price > 0, "Price must be greater than zero");
+        marketItems[_tokenId].price = _price;
         marketItems[_tokenId].seller = payable(msg.sender);
 
         _transfer(msg.sender, address(this), _tokenId);
-        emit MarketItemRelisted(_tokenId, msg.sender, price);
+        emit MarketItemRelisted(_tokenId, msg.sender, _price);
     }
 
     /* Fetches all the tokens currently listed for sale */

@@ -3,21 +3,21 @@ import { ethers } from "ethers"
 import Identicon from 'identicon.js';
 import { Row, Col, Card, Button, InputGroup, Form } from 'react-bootstrap'
 
-export default function MyTokens({ nftMarketplace }) {
-  const audioRef = useRef([]);
+export default function MyTokens({ contract }) {
+  const audioRefs = useRef([]);
+  const [isPlaying, setIsPlaying] = useState(null)
   const [loading, setLoading] = useState(true)
   const [myTokens, setMyTokens] = useState(null)
-  const [isPlaying, setIsPlaying] = useState(null)
   const [selected, setSelected] = useState(0)
   const [previous, setPrevious] = useState(null)
-  const [inputIndex, setInputIndex] = useState(null)
+  const [resellId, setResellId] = useState(null)
   const [resellPrice, setResellPrice] = useState(null)
   const loadMyTokens = async () => {
     // Get all unsold items/tokens
-    const results = await nftMarketplace.getMyTokens()
+    const results = await contract.getMyTokens()
     const myTokens = await Promise.all(results.map(async i => {
       // get uri url from contract
-      const uri = await nftMarketplace.tokenURI(i.tokenId)
+      const uri = await contract.tokenURI(i.tokenId)
       // use uri to fetch the nft metadata stored on ipfs 
       const response = await fetch(uri + ".json")
       const metadata = await response.json()
@@ -33,29 +33,26 @@ export default function MyTokens({ nftMarketplace }) {
       }
       return item
     }))
-    setIsPlaying(isPlaying)
     setMyTokens(myTokens)
     setLoading(false)
   }
   const resellItem = async (item) => {
-    console.log(item.itemId, inputIndex)
-    if (resellPrice === "0" || item.itemId !== inputIndex || !resellPrice) return
+    if (resellPrice === "0" || item.itemId !== resellId || !resellPrice) return
     // Get royalty fee
-    const fee = await nftMarketplace.royaltyFee()
+    const fee = await contract.royaltyFee()
     const price = ethers.utils.parseEther(resellPrice.toString())
-    await (await nftMarketplace.resellToken(item.itemId, price, { value: fee })).wait()
+    await (await contract.resellToken(item.itemId, price, { value: fee })).wait()
     loadMyTokens()
   }
   useEffect(() => {
     if (isPlaying) {
-      audioRef.current[selected].play()
-      if (selected !== previous) audioRef.current[previous].pause()
+      audioRefs.current[selected].play()
+      if (selected !== previous) audioRefs.current[previous].pause()
     } else if (isPlaying !== null) {
-      audioRef.current[selected].pause()
+      audioRefs.current[selected].pause()
     }
 
-  }, [selected, previous, isPlaying])
-
+  })
   useEffect(() => {
     !myTokens && loadMyTokens()
   })
@@ -73,7 +70,7 @@ export default function MyTokens({ nftMarketplace }) {
           <Row xs={1} md={2} lg={4} className="g-4 py-5">
             {myTokens.map((item, idx) => (
               <Col key={idx} className="overflow-hidden">
-                <audio src={item.audio} key={idx} ref={el => audioRef.current[idx] = el}></audio>
+                <audio src={item.audio} key={idx} ref={el => audioRefs.current[idx] = el}></audio>
                 <Card>
                   <Card.Img variant="top" src={item.identicon} />
                   <Card.Body color="secondary">
@@ -106,11 +103,11 @@ export default function MyTokens({ nftMarketplace }) {
                       </Button>
                       <Form.Control
                         onChange={(e) => {
-                          setInputIndex(item.itemId)
+                          setResellId(item.itemId)
                           setResellPrice(e.target.value)
                         }}
                         size="md"
-                        value={inputIndex === item.itemId ? resellPrice : ''}
+                        value={resellId === item.itemId ? resellPrice : ''}
                         required type="number"
                         placeholder="Price in ETH"
                       />

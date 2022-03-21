@@ -3,7 +3,7 @@ import { ethers } from "ethers"
 import Identicon from 'identicon.js';
 import { Card, Button, ButtonGroup } from 'react-bootstrap'
 
-const Home = ({ nftMarketplace }) => {
+const Home = ({ contract }) => {
   const audioRef = useRef(null);
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(null)
@@ -11,10 +11,10 @@ const Home = ({ nftMarketplace }) => {
   const [marketItems, setMarketItems] = useState(null)
   const loadMarketplaceItems = async () => {
     // Get all unsold items/tokens
-    const results = await nftMarketplace.getAllUnsoldTokens()
+    const results = await contract.getAllUnsoldTokens()
     const marketItems = await Promise.all(results.map(async i => {
       // get uri url from contract
-      const uri = await nftMarketplace.tokenURI(i.tokenId)
+      const uri = await contract.tokenURI(i.tokenId)
       // use uri to fetch the nft metadata stored on ipfs 
       const response = await fetch(uri + ".json")
       const metadata = await response.json()
@@ -33,7 +33,7 @@ const Home = ({ nftMarketplace }) => {
     setLoading(false)
   }
   const buyMarketItem = async (item) => {
-    await (await nftMarketplace.buyToken(item.itemId, { value: item.price })).wait()
+    await (await contract.buyToken(item.itemId, { value: item.price })).wait()
     loadMarketplaceItems()
   }
   const skipSong = (forwards) => {
@@ -134,4 +134,3 @@ const Home = ({ nftMarketplace }) => {
   );
 }
 export default Home
-
