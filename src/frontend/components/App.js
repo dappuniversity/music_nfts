@@ -41,10 +41,7 @@ function App() {
         <>
           <Navbar expand="lg" bg="secondary" variant="dark">
             <Container>
-              <Navbar.Brand href="http://www.dappuniversity.com/bootcamp">
-                <img src={logo} width="40" height="40" className="" alt="" />
-                &nbsp; Music NFT player
-              </Navbar.Brand>
+              
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="me-auto">
