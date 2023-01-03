@@ -83,7 +83,7 @@ const Home = ({ contract }) => {
             <div className="content mx-auto">
               <audio src={marketItems[currentItemIndex].audio} ref={audioRef}></audio>
               <Card>
-                <Card.Header>{currentItemIndex + 1} of {marketItems.length}</Card.Header>
+                <Card.Header>Titre {currentItemIndex + 1} sur {marketItems.length}</Card.Header>
                 <Card.Img variant="top" src={marketItems[currentItemIndex].identicon} />
                 <Card.Body color="secondary">
                   <Card.Title as="h2" > {marketItems[currentItemIndex].name}</Card.Title>
@@ -116,7 +116,7 @@ const Home = ({ contract }) => {
                 <Card.Footer>
                   <div className='d-grid my-1'>
                     <Button onClick={() => buyMarketItem(marketItems[currentItemIndex])} variant="primary" size="lg">
-                      {`Buy for ${ethers.utils.formatEther(marketItems[currentItemIndex].price)} ETH`}
+                      {`ACHETEZ À ${ethers.utils.formatEther(marketItems[currentItemIndex].price)} ETH`}
                     </Button>
                   </div>
                 </Card.Footer>
@@ -126,7 +126,7 @@ const Home = ({ contract }) => {
         </div >
         : (
           <main style={{ padding: "1rem 0" }}>
-            <h2>No listed assets</h2>
+            <h2>Vous n'avez aucun NFT de l'album</h2>
           </main>
         )}
 

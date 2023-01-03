@@ -10,7 +10,7 @@ async function main() {
 
   // deploy contracts here:
   const NFTMarketplaceFactory = await ethers.getContractFactory("MusicNFTMarketplace");
-  nftMarketplace = await NFTMarketplaceFactory.deploy(
+  const nftMarketplace = await NFTMarketplaceFactory.deploy(
     royaltyFee,
     artist.address,
     prices,

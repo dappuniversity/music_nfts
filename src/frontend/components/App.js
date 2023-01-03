@@ -9,7 +9,7 @@ import { ethers } from "ethers"
 import MusicNFTMarketplaceAbi from '../contractsData/MusicNFTMarketplace.json'
 import MusicNFTMarketplaceAddress from '../contractsData/MusicNFTMarketplace-address.json'
 import { Spinner, Navbar, Nav, Button, Container } from 'react-bootstrap'
-import logo from './logo.png'
+import logo from './ando.png'
 import Home from './Home.js'
 import MyTokens from './MyTokens.js'
 import MyResales from './MyResales.js'
@@ -41,16 +41,16 @@ function App() {
         <>
           <Navbar expand="lg" bg="secondary" variant="dark">
             <Container>
-              <Navbar.Brand href="http://www.dappuniversity.com/bootcamp">
+              <Navbar.Brand href="http://www.ando.software">
                 <img src={logo} width="40" height="40" className="" alt="" />
-                &nbsp; Music NFT player
+                &nbsp; NFT DE L'ALBUM
               </Navbar.Brand>
               <Navbar.Toggle aria-controls="responsive-navbar-nav" />
               <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="me-auto">
-                  <Nav.Link as={Link} to="/">Home</Nav.Link>
-                  <Nav.Link as={Link} to="/my-tokens">My Tokens</Nav.Link>
-                  <Nav.Link as={Link} to="/my-resales">My Resales</Nav.Link>
+                  <Nav.Link as={Link} to="/">ACCEUIL</Nav.Link>
+                  <Nav.Link as={Link} to="/my-tokens">VOS NFTS</Nav.Link>
+                  <Nav.Link as={Link} to="/my-resales">VOS TRANSACTIONS</Nav.Link>
                 </Nav>
                 <Nav>
                   {account ? (
@@ -65,7 +65,7 @@ function App() {
 
                     </Nav.Link>
                   ) : (
-                    <Button onClick={web3Handler} variant="outline-light">Connect Wallet</Button>
+                    <Button onClick={web3Handler} variant="outline-light">Connectez votre wallet</Button>
                   )}
                 </Nav>
               </Navbar.Collapse>
@@ -76,7 +76,7 @@ function App() {
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
               <Spinner animation="border" style={{ display: 'flex' }} />
-              <p className='mx-3 my-0'>Awaiting Metamask Connection...</p>
+              <p className='mx-3 my-0'>En attente de votre connexion à METAMASK...</p>
             </div>
           ) : (
             <Routes>
