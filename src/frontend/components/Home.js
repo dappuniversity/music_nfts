@@ -116,7 +116,7 @@ const Home = ({ contract }) => {
                 <Card.Footer>
                   <div className='d-grid my-1'>
                     <Button onClick={() => buyMarketItem(marketItems[currentItemIndex])} variant="primary" size="lg">
-                      {`ACHETEZ À ${ethers.utils.formatEther(marketItems[currentItemIndex].price)} ETH`}
+                      {`ACHETEZ À ${ethers.utils.formatEther(marketItems[currentItemIndex].price)} SNTK`}
                     </Button>
                   </div>
                 </Card.Footer>
