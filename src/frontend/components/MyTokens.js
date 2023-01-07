@@ -59,7 +59,7 @@ export default function MyTokens({ contract }) {
 
   if (loading) return (
     <main style={{ padding: "1rem 0" }}>
-      <h2>Loading...</h2>
+      <h2>Chargement...</h2>
     </main>
   )
 
@@ -99,7 +99,7 @@ export default function MyTokens({ contract }) {
                   <Card.Footer>
                     <InputGroup className="my-1">
                       <Button onClick={() => resellItem(item)} variant="outline-primary" id="button-addon1">
-                        Resell
+                        Revendre
                       </Button>
                       <Form.Control
                         onChange={(e) => {
@@ -120,7 +120,7 @@ export default function MyTokens({ contract }) {
         </div>
         : (
           <main style={{ padding: "1rem 0" }}>
-            <h2>No owned tokens</h2>
+            <h2>Vous ne possédez aucun titre.</h2>
           </main>
         )}
     </div>
